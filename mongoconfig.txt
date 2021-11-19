@@ -1,0 +1,96 @@
+version: "2"
+services:
+  master_mongo:
+    container_name: master_mongo
+    image: mongo:latest
+    ports:
+      - 37017:27017
+    command: ["--replSet","r1"]
+    volumes:
+      - /data/cluster/db1:/data/db
+  backup_mongo:
+    container_name: backup_mongo
+    image: mongo:latest
+    ports:
+      - 37018:27017
+    command: ["--replSet","r1"]
+    volumes:
+      - /data/cluster/db2:/data/db
+  arbi_mongo:
+    container_name: arbi_mongo
+    image: mongo:latest
+    ports:
+      - 37019:27017
+    command: ["--replSet","r1"]
+    volumes:
+      - /data/cluster/db3:/data/db
+
+
+config = {
+    "_id" : "myset",
+    "members" : [
+        {
+            "_id" : 0,
+            "host" : "172.32.0.253:37017"
+        },
+        {
+            "_id" : 1,
+            "host" : "172.32.0.253:37018"
+        },
+        {
+            "_id" : 2,
+            "host" : "172.32.0.253:37019"
+        }
+    ]
+}
+
+config = {
+    "_id" : "r1",
+    "members" : [
+        {
+            "_id" : 0,
+            "host" : "192.168.1.22:27017"
+        },
+        {
+            "_id" : 1,
+            "host" : "192.168.1.22:27018"
+        },
+        {
+            "_id" : 2,
+            "host" : "192.168.1.22:27019"
+        }
+    ]
+}
+
+
+
+rs.initiate(config)
+
+
+db.createUser(  
+    {
+        user: "poolweb",  
+        pwd: "tanxjrw2020",  
+        roles: [ { role: "readWrite", db: "poolweb" } ]  
+    }
+)
+
+db.createUser(  
+    {
+        user: "god",  
+        pwd: "123",  
+        roles: [ { role: "readWrite", db: "poolweb" } ]  
+    }
+)
+
+
+db.dropUser("god", {w: "majority", wtimeout: 5000})
+
+
+db.createUser(  
+    {
+        user: "poolweb",  
+        pwd: "tanxjrw2020",  
+        roles: [ { role: "userAdminAnyDatabase", db: "admin" } ]  
+    }
+)
