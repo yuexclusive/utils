@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package auth;
+
+option go_package="./proto/auth";
+
+service Auth {
+	rpc Auth(AuthRequest) returns (AuthResponse) {}
+	rpc Validate(ValidateRequest) returns (ValidateResponse) {}
+}
+
+message AuthRequest{
+	//id（账号）
+	string id = 1; 
+	//key (token)
+	string key = 2;
+}
+
+message AuthResponse{
+	string token =1;
+}
+
+message ValidateRequest{
+	string token =1;
+}
+
+message ValidateResponse{
+	string name=1;
+}

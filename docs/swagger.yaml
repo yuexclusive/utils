@@ -1,0 +1,29 @@
+info:
+  contact: {}
+paths:
+  /test/hello:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: output
+          schema:
+            type: string
+        "400":
+          description: ok
+          schema:
+            type: string
+        "404":
+          description: ok
+          schema:
+            type: string
+        "500":
+          description: ok
+          schema:
+            type: string
+      tags:
+      - 获取token
+swagger: "2.0"
