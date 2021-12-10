@@ -10,24 +10,24 @@ services:
       - $HOME/docker_volumes/postgres:/var/lib/postgresql/data
       - $HOME/golang/utils/future_postgres.sql:/docker-entrypoint-initdb.d/future_postgres.sql
 
-  # mysql:
-  #   image: mysql:latest
-  #   ports: 
-  #     - 3306:3306
-  #     - 33060:33060
-  #   command: --default-authentication-plugin=mysql_native_password
-  #   environment:
-  #     - MYSQL_ROOT_PASSWORD=123456
-  #   volumes:
-  #     - $HOME/docker_volumes/mysql:/var/lib/mysql
-  #     - /Users/liuyu/golang/utils/future_mysql.sql:/docker-entrypoint-initdb.d/future.sql
+  mysql:
+    image: mysql/mysql-server:latest
+    ports: 
+      - 3306:3306
+      - 33060:33060
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+    volumes:
+      - $HOME/docker_volumes/mysql:/var/lib/mysql
+      - $HOME/golang/utils/future_mysql.sql:/docker-entrypoint-initdb.d/future.sql
 
-  # redis:
-  #   image: redis
-  #   ports:
-  #     - 6379:6379
-  #   volumes:
-  #     - $HOME/docker_volumes/redis:/data
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
+    volumes:
+      - $HOME/docker_volumes/redis:/data
   
   # mongo:
   #   image: mongo:latest
@@ -144,23 +144,23 @@ services:
   #     - MICRO_REGISTRY=etcd
   #     - MICRO_REGISTRY_ADDRESS=etcd:2379
 
-  # elasticsearch:
-  #   image: elasticsearch:7.12.1
-  #   ports: 
-  #     - 9200:9200
-  #   environment:
-  #     discovery.type: "single-node"
-  #     ES_JAVA_OPTS: " -Xms256m -Xmx256m"
-  #   volumes:
-  #     - $HOME/docker_volumes/elasticsearch:/usr/share/elasticsearch/data
+  elasticsearch:
+    image: elasticsearch:7.14.2
+    ports: 
+      - 9200:9200
+    environment:
+      discovery.type: "single-node"
+      ES_JAVA_OPTS: " -Xms256m -Xmx256m"
+    volumes:
+      - $HOME/docker_volumes/elasticsearch:/usr/share/elasticsearch/data
     
-  # kibana:
-  #   image: kibana:7.12.1
-  #   ports:
-  #     - 5601:5601
-  #   volumes:
-  #     - $HOME/docker_volumes/kibana.yml:/usr/share/kibana/config/kibana.yml
-  #   # docker cp $HOME/kibana.yml crawler_kibana_1:/usr/share/kibana/config/kibana.yml
+  kibana:
+    image: kibana:7.14.2
+    ports:
+      - 5601:5601
+    volumes:
+      - $HOME/docker_volumes/kibana.yml:/usr/share/kibana/config/kibana.yml
+    # docker cp $HOME/kibana.yml crawler_kibana_1:/usr/share/kibana/config/kibana.yml
   
   # jaeger-collector:
   #   image: jaegertracing/jaeger-collector

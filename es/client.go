@@ -2,18 +2,16 @@ package es
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"sync"
 	"time"
 
 	elastic "github.com/olivere/elastic/v7"
-	"github.com/yuexclusive/utils/logger"
+	"github.com/yuexclusive/utils/log"
 )
 
 var client *elastic.Client
 var clientLock sync.Mutex
-var log = logger.Single()
 
 func InitClient(config *Config) error {
 	if client != nil {
@@ -45,9 +43,9 @@ func InitClient(config *Config) error {
 		}
 
 		if code == http.StatusOK {
-			log.Info(fmt.Sprintf("connected to es cluster: %s ,version: %s", res.ClusterName, res.Version.Number))
+			log.Info("connected to es cluster successed", "cluster name", res.ClusterName, "number", res.Version.Number)
 		} else {
-			log.Warn(fmt.Sprintf("connected to es cluster: %s ,version: %s, return code %d", res.ClusterName, res.Version.Number, code))
+			log.Warn("connected to es cluster failed", "cluster name", res.ClusterName, "number", res.Version.Number, "code", code)
 		}
 	}
 

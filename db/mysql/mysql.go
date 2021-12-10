@@ -5,6 +5,6 @@ import (
 	"gorm.io/driver/mysql"
 )
 
-func Init(dsn string, config *db.Config) {
-	db.Init(mysql.Open(dsn), config)
+func Init(dsn string, cfgs ...*db.Config) {
+	db.Init(mysql.Open(dsn), cfgs...)
 }

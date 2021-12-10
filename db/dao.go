@@ -1,5 +1,6 @@
 package db
 
-type Dao interface {
-	Init(c *Client)
+type IDao interface {
+	Client() *Client
+	Prefix(prefix string)
 }

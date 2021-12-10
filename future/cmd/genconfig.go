@@ -49,6 +49,11 @@ func init() {
 	// genconfigCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
+type Config struct {
+	config.Config `mapstructure:"config"`
+}
+
 func genConfig() {
-	config.MustGet()
+	var cfg Config
+	config.Init(config.TOML, "./config.toml", &cfg)
 }

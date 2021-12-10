@@ -10,7 +10,7 @@ address = "host=127.0.0.1 port=5432 user=postgres password=123456 sslmode=disabl
 address = "http://127.0.0.1:9200"
 
 [config.etcd]
-address = "127.0.0.1:2379"
+address = ["127.0.0.1:2379"]
 lease = 5
 
 [config.jaeger]
