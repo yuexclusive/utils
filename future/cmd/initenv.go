@@ -20,8 +20,9 @@ import (
 	"fmt"
 	"text/template"
 
+	"os/exec"
+
 	"github.com/spf13/cobra"
-	"github.com/yuexclusive/utils/cmd"
 )
 
 // initenvCmd represents the initenv command
@@ -66,7 +67,9 @@ func initenv() {
 	}
 	str := buf.String()
 	fmt.Println(str)
-	cmd.Run("sh", "-c", str)
+	if err := exec.Command("sh", "-c", str).Run(); err != nil {
+		panic(err)
+	}
 }
 
 func init() {

@@ -3,7 +3,6 @@ package auth
 import (
 	"context"
 
-	"github.com/yuexclusive/utils/config"
 	"github.com/yuexclusive/utils/rpc/client"
 
 	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
@@ -16,7 +15,9 @@ func AuthFunc(ctx context.Context) (context.Context, error) {
 		return nil, err
 	}
 
-	validToken(token)
+	var authServiceName string
+
+	validToken(token, authServiceName)
 
 	// WARNING: in production define your own type to avoid context collisions
 	newCtx := context.WithValue(ctx, "tokenInfo", token)
@@ -26,8 +27,8 @@ func AuthFunc(ctx context.Context) (context.Context, error) {
 }
 
 // validToken validates the authorization.
-func validToken(token string) error {
-	closer, client, err := client.Dial(config.MustGet().AuthServiceName, "")
+func validToken(token, authSrviceName string) error {
+	closer, client, err := client.Dial(authSrviceName, "")
 
 	if err != nil {
 		return err

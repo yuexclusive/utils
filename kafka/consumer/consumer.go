@@ -6,10 +6,8 @@ import (
 	"time"
 
 	"github.com/Shopify/sarama"
-	"github.com/yuexclusive/utils/logger"
+	"github.com/yuexclusive/utils/log"
 )
-
-var log = logger.Single()
 
 // DefaultConfig 默认配置
 func DefaultConfig() *sarama.Config {

@@ -25,8 +25,9 @@ import (
 	"regexp"
 	"time"
 
+	"os/exec"
+
 	"github.com/spf13/cobra"
-	"github.com/yuexclusive/utils/cmd"
 )
 
 // publishCmd represents the publish command
@@ -138,7 +139,9 @@ func publish() {
 
 	fmt.Println(command)
 
-	cmd.Run("sh", "-c", command)
+	if err := exec.Command("sh", "-c", command).Run(); err != nil {
+		panic(err)
+	}
 
 	fmt.Printf("总耗时:%f秒\n", time.Since(now).Seconds())
 }

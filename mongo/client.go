@@ -5,18 +5,15 @@ import (
 	"sync"
 	"time"
 
+	"github.com/yuexclusive/utils/log"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
-
-	"github.com/yuexclusive/utils/logger"
 )
 
 var clientMapLock sync.Mutex
 var clientMap = make(map[ClientName]*mongo.Client)
 var configMap = make(map[ClientName]*Config)
-
-var log = logger.Single().Sugar()
 
 // Client 根据name获取client
 // 注意：本方法直接返回client结果，是因为传入的name一定是写好的constant，而且一定已经成功初始化完成，否则程序不可能执行到这里，所以不用做任何判断
@@ -92,7 +89,7 @@ func monitoring() {
 	log.Info("mongo connection aliveness start")
 	defer func() {
 		if err := recover(); err != nil {
-			log.Errorf("mongo connection aliveness monitoring stopped: %v", err)
+			log.Error("mongo connection aliveness monitoring", "error", err)
 			return
 		}
 		log.Error("mongo connection aliveness monitoring stopped")
@@ -123,7 +120,7 @@ func ping() []ClientName {
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
 		defer cancel()
 		if err := v.Ping(ctx, readpref.Primary()); err != nil {
-			log.Errorf("[%s]mongo connection closed", k)
+			log.Error("mongo connection closed", "client name", k)
 			r = append(r, k)
 			// {
 			// 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
@@ -141,7 +138,7 @@ func reconnect(c []ClientName) {
 	for _, v := range c {
 		config := configMap[v]
 		if _, err := InitClient(config); err != nil {
-			log.Errorf("reconnect %s failed: %v", v, err)
+			log.Error("reconnect failed", "client name", v, "error", err)
 		}
 	}
 }

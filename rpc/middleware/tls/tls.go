@@ -3,14 +3,12 @@ package tls
 import (
 	"crypto/tls"
 
-	"github.com/yuexclusive/utils/config"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 )
 
-func Option() (grpc.ServerOption, error) {
-	cfg := config.MustGet()
-	cert, err := tls.LoadX509KeyPair(cfg.TLS.CertFile, cfg.TLS.KeyFile)
+func Option(certFile, keyFile string) (grpc.ServerOption, error) {
+	cert, err := tls.LoadX509KeyPair(certFile, keyFile)
 	if err != nil {
 		return nil, err
 	}

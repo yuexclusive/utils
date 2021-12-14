@@ -6,9 +6,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/yuexclusive/utils/logger"
-
 	"github.com/go-redis/redis"
+
+	"github.com/yuexclusive/utils/log"
 )
 
 // Client client interface
@@ -19,7 +19,6 @@ type Client struct {
 
 var clientMapLock sync.Mutex
 var clientMap = make(map[ClientName]*Client)
-var sugar = logger.Single().Sugar()
 
 // GetClient 根据name获取客户端连接
 func GetClient(name ClientName) *Client {
@@ -66,13 +65,13 @@ func init() {
 
 // monitoring 重连监控,无限循环，检查redis客服端是否断开连接，如果断开重新连接
 func monitoring() {
-	sugar.Info("redis 默认开启重连监控")
+	log.Info("redis 默认开启重连监控")
 	defer func() {
 		if err := recover(); err != nil {
-			sugar.Errorf("redis connection aliveness sniffer stopped: %v", err)
+			log.Error("redis connection aliveness sniffer stopped", "error", err)
 			return
 		}
-		sugar.Error("redis connection aliveness sniffer stopped")
+		log.Error("redis connection aliveness sniffer stopped")
 	}()
 
 	for {
@@ -83,7 +82,7 @@ func monitoring() {
 			continue
 		}
 
-		sugar.Infof("redis异常断开，正在尝试重连~~~~~")
+		log.Info("redis异常断开，正在尝试重连~~~~~")
 		reconnect(c)
 	}
 }
@@ -136,9 +135,9 @@ func reconnect(c []ClientName) {
 		err := InitClient(config)
 		if err != nil {
 			b, _ := json.Marshal(config)
-			sugar.Errorf("reconnect redis重连失败,config=%v,err=%+v", string(b), err)
+			log.Error("reconnect redis重连失败", "config", string(b), "error", err)
 		} else {
-			sugar.Infof("reconnect redis重连成功...clientName=%s", config.ClientName)
+			log.Info("reconnect redis重连成功", "client name", config.ClientName)
 		}
 	}
 }

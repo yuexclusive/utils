@@ -64,8 +64,8 @@ type Nats struct {
 
 // ETCD ETCD
 type ETCD struct {
-	Address string `mapstructure:"address"`
-	Lease   int    `mapstructure:"lease"`
+	Address []string `mapstructure:"address"`
+	Lease   int      `mapstructure:"lease"`
 }
 
 // TLS TLS

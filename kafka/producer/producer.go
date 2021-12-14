@@ -6,10 +6,8 @@ import (
 	"sync"
 
 	"github.com/Shopify/sarama"
-	"github.com/yuexclusive/utils/logger"
+	"github.com/yuexclusive/utils/log"
 )
-
-var log = logger.Single()
 
 // Producer 生产者
 type Producer struct {

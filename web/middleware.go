@@ -9,20 +9,16 @@ import (
 
 	"github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/ext"
-	"github.com/yuexclusive/utils/logger"
-	"go.uber.org/zap"
 
 	"github.com/gin-gonic/gin"
 	"github.com/juju/ratelimit"
 	p "github.com/prometheus/client_golang/prometheus/promhttp"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
-	"github.com/yuexclusive/utils/config"
+	"github.com/yuexclusive/utils/log"
 )
 
 const contextTracerKey = "Tracer-context"
-
-var l = logger.Single()
 
 // sf sampling frequency
 var sf = 100
@@ -43,27 +39,27 @@ func Prometheus(engine *gin.Engine) {
 	engine.GET(path, func(c *gin.Context) {
 		p.Handler().ServeHTTP(c.Writer, c.Request)
 	})
-	l.Info("open prometheus", zap.String("path", path))
+	log.Info("open prometheus", "path", path)
 }
 
 // Swagger
-func Swagger(engine *gin.Engine) {
+func Swagger(engine *gin.Engine, name, host, port string) {
 	var url, path string
-	if name := config.MustGet().Name; name == "" {
-		url = fmt.Sprintf("http://%s:%s/swagger/doc.json", config.MustGet().Host, config.MustGet().Port)
+	if name == "" {
+		url = fmt.Sprintf("http://%s:%s/swagger/doc.json", host, port)
 		path = "/swagger/*any"
 	} else {
-		url = fmt.Sprintf("http://%s:%s/%s/swagger/doc.json", config.MustGet().Host, config.MustGet().Port, config.MustGet().Name) // The url pointing to API definition
+		url = fmt.Sprintf("http://%s:%s/%s/swagger/doc.json", host, port, name) // The url pointing to API definition
 		path = fmt.Sprintf("/%s/swagger/*any", name)
 	}
 	engine.GET(path, ginSwagger.WrapHandler(swaggerFiles.Handler, ginSwagger.URL(url)))
 
-	l.Info("open swagger", zap.String("url", url), zap.String("path", path))
+	log.Info("open swagger", "url", url, "path", path)
 }
 
 // AllowOrigin
 func AllowOrigin() gin.HandlerFunc {
-	l.Info("open allow origin")
+	log.Info("open allow origin")
 	return func(c *gin.Context) {
 		c.Header("Access-Control-Allow-Origin", "*")
 		c.Header("Access-Control-Allow-Headers", "Content-Type, AccessToken,X-CSRF-Token, Authorization, Token")
@@ -80,7 +76,7 @@ func AllowOrigin() gin.HandlerFunc {
 // RateLimite
 func RateLimite(duration time.Duration, capacity int64) gin.HandlerFunc {
 	bucket := ratelimit.NewBucket(duration, capacity)
-	l.Info("open rate limit", zap.String("duration", duration.String()), zap.Int64("capacity", capacity))
+	log.Info("open rate limit", duration, duration.String(), capacity, capacity)
 	return func(c *gin.Context) {
 		available := bucket.TakeAvailable(1)
 		if available <= 0 {
@@ -105,7 +101,7 @@ func contextWithSpan(c *gin.Context) (ctx context.Context) {
 
 // Tracer
 func Tracer() gin.HandlerFunc {
-	l.Info("open trace")
+	log.Info("open trace")
 
 	return func(c *gin.Context) {
 		md := make(map[string]string)
@@ -116,7 +112,7 @@ func Tracer() gin.HandlerFunc {
 		if err := opentracing.GlobalTracer().Inject(sp.Context(),
 			opentracing.TextMap,
 			opentracing.TextMapCarrier(md)); err != nil {
-			l.Fatal(err.Error())
+			log.Fatal(err.Error())
 		}
 
 		ctx := context.TODO()

@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/yuexclusive/utils/log"
+
 	grpc_opentracing "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 	"github.com/yuexclusive/utils/config"
-	"github.com/yuexclusive/utils/logger"
 	"github.com/yuexclusive/utils/registry"
 	"github.com/yuexclusive/utils/rpc/middleware/trace"
 	"golang.org/x/oauth2"
@@ -15,14 +16,16 @@ import (
 	"google.golang.org/grpc/credentials/oauth"
 )
 
+type Config struct {
+	config.Config `mapstructure:"config"`
+}
+
 func Dial(name string, token string, dialOptions ...grpc.DialOption) (io.Closer, *grpc.ClientConn, error) {
 	var opts []grpc.DialOption
 	if token != "" {
 		perRPC := oauth.NewOauthAccess(fetchToken(token))
 		opts = append(opts, grpc.WithPerRPCCredentials(perRPC))
 	}
-
-	cfg := config.MustGet()
 
 	creds, err := credentials.NewClientTLSFromFile(cfg.TLS.CACertFile, cfg.TLS.ServerNameOverride)
 	if err != nil {
@@ -33,7 +36,7 @@ func Dial(name string, token string, dialOptions ...grpc.DialOption) (io.Closer,
 	tracer, closer, err := trace.Tracer()
 
 	if err != nil {
-		logger.Single().Sugar().Fatal(err)
+		log.Fatal(err.Error())
 	}
 
 	// defer closer.Close()
@@ -48,7 +51,7 @@ func Dial(name string, token string, dialOptions ...grpc.DialOption) (io.Closer,
 
 	opts = append(opts, dialOptions...)
 
-	dis := registry.NewDiscovery(cfg.ETCDAddress, name)
+	dis := registry.NewDiscovery(cfg.ETCD.Address, name)
 
 	address, err := dis.Get(name)
 	if err != nil {
