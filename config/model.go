@@ -1,10 +1,5 @@
 package config
 
-// DefaultConfig DefaultConfig
-type DefaultConfig struct {
-	Config `mapstructure:"config"`
-}
-
 // Config Config
 type Config struct {
 	Name     string    `mapstructure:"name"` //name of app

@@ -1,11 +1,15 @@
-package sqlite
+package postgres
 
 import (
 	"github.com/yuexclusive/utils/db"
 	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
-// Init dsn := "sqlserver://gorm:LoremIpsum86@localhost:9930?database=gorm"
-func Init(dsn string, config *db.Config) {
-	db.Init(sqlite.Open(dsn), config)
+func Init(dsn string, name string, opts ...gorm.Option) {
+	db.Open(name, sqlite.Open(dsn), opts...)
+}
+
+func InitDefault(dsn string, opts ...gorm.Option) {
+	db.Open("", sqlite.Open(dsn), opts...)
 }

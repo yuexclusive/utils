@@ -1,26 +1,31 @@
 package pulsar
 
 import (
+	"context"
+
 	"github.com/apache/pulsar-client-go/pulsar"
 )
 
-// IClient IClient
-type IClient interface {
-	pulsar.Client
-}
+func Consume(ctx context.Context, url string, topic string, subscriptionName string, subscriptionType pulsar.SubscriptionType) {
+	client, err := pulsar.NewClient(pulsar.ClientOptions{URL: url})
 
-// Client Client
-type Client struct {
-	pulsar.Client
-}
-
-// NewClient NewClient
-func NewClient(url string) (IClient, error) {
-	client, err := pulsar.NewClient(pulsar.ClientOptions{
-		URL: url,
-	})
 	if err != nil {
-		return nil, err
+		panic(err)
 	}
-	return &Client{Client: client}, nil
+
+	consumer, err := client.Subscribe(pulsar.ConsumerOptions{
+		Topic:            topic,
+		SubscriptionName: subscriptionName,
+		Type:             subscriptionType,
+	})
+
+	if err != nil {
+		panic(err)
+	}
+
+	msg, err := consumer.Receive(ctx)
+
+	if err != nil {
+		panic(err)
+	}
 }

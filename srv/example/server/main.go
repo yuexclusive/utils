@@ -9,7 +9,6 @@ import (
 	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
-	"github.com/yuexclusive/utils/logger"
 	"github.com/yuexclusive/utils/rpc/middleware/auth"
 	"github.com/yuexclusive/utils/srv/example/proto/hello"
 	"google.golang.org/grpc"
@@ -25,8 +24,6 @@ func (h *handler) Send(ctx context.Context, req *hello.Request) (*hello.Response
 
 	return &hello.Response{Res: fmt.Sprintf("hello %s", req.Name)}, nil
 }
-
-var l = logger.Single()
 
 func main() {
 	server, err := rpc.NewServer(

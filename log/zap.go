@@ -26,8 +26,8 @@ const (
 
 // Zap Zap
 type Zap struct {
-	ZapLogger *zap.Logger
-	ZapConfig *config.Log
+	zapLogger *zap.Logger
+	zapConfig *config.Log
 }
 
 // Level Level
@@ -47,12 +47,13 @@ func NewZap() *Zap {
 }
 
 func (z *Zap) initConfig() {
-	cfg, err := config.Default()
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	z.ZapConfig = cfg.Log
+	defer func() {
+		if r := recover(); r != nil {
+			log.Println("read config for log failed: ", r)
+		}
+	}()
+	cfg := config.Init[config.Config]("toml", "config.toml").GetConfig()
+	z.zapConfig = cfg.Log
 }
 
 // new logger
@@ -72,11 +73,11 @@ func (z *Zap) initLogger() {
 		zap.AddCaller(),
 	}
 
-	if z.ZapConfig != nil && strings.ToLower(strings.TrimSpace(z.ZapConfig.Mode)) == DevelopMode {
+	if z.zapConfig != nil && strings.ToLower(strings.TrimSpace(z.zapConfig.Mode)) == DevelopMode {
 		options = append(options, zap.Development())
 	}
 
-	z.ZapLogger = zap.New(cores, options...)
+	z.zapLogger = zap.New(cores, options...)
 }
 
 // newCore newCore
@@ -87,8 +88,8 @@ func (z *Zap) newCore(level zapcore.Level) zapcore.Core {
 // getLogWriter 写入文件
 func (z *Zap) getLogWriter(level string) zapcore.WriteSyncer {
 	filePath := ""
-	if z.ZapConfig != nil {
-		filePath = z.ZapConfig.Path
+	if z.zapConfig != nil {
+		filePath = z.zapConfig.Path
 	}
 	hook, err := rotatelogs.New(
 		path.Join(filePath, "%Y-%m-%d_"+fmt.Sprintf("%s.log", level)),
@@ -113,12 +114,12 @@ func (z *Zap) getEncoder() zapcore.Encoder {
 
 // Logger Logger
 func (z *Zap) Logger() *zap.Logger {
-	return z.ZapLogger
+	return z.zapLogger
 }
 
 // Sugar Sugar
 func (z *Zap) Sugar() *zap.SugaredLogger {
-	return z.ZapLogger.Sugar()
+	return z.zapLogger.Sugar()
 }
 
 // Ginzap returns a gin.HandlerFunc (middleware) that logs requests using uber-go/zap.

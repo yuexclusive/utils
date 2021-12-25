@@ -5,7 +5,6 @@ import (
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	"github.com/yuexclusive/utils/config"
 	"github.com/yuexclusive/utils/db"
-	"github.com/yuexclusive/utils/logger"
 	"github.com/yuexclusive/utils/rpc"
 	"github.com/yuexclusive/utils/srv/auth/handler"
 	"github.com/yuexclusive/utils/srv/auth/proto/auth"
@@ -13,10 +12,6 @@ import (
 
 	_ "github.com/yuexclusive/utils/db/postgres"
 )
-
-var l = logger.Single()
-
-var sugar = l.Sugar()
 
 func main() {
 	// tracer, closer, err := trace.Tracer()

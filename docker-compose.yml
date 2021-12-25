@@ -1,34 +1,34 @@
 version: "3"
 services:  
-  postgres:
-    image: postgres
-    environment: 
-      - POSTGRES_PASSWORD=123456
-    ports:
-      - 5432:5432
-    volumes:
-      - $HOME/docker_volumes/postgres:/var/lib/postgresql/data
-      - $HOME/golang/utils/future_postgres.sql:/docker-entrypoint-initdb.d/future_postgres.sql
+  # redis:
+  #   image: redis
+  #   ports:
+  #     - 6379:6379
+  #   volumes:
+  #     - $HOME/docker_volumes/redis:/data
 
-  mysql:
-    image: mysql/mysql-server:latest
-    ports: 
-      - 3306:3306
-      - 33060:33060
-    command: --default-authentication-plugin=mysql_native_password
-    environment:
-      - MYSQL_ROOT_PASSWORD=123456
-    volumes:
-      - $HOME/docker_volumes/mysql:/var/lib/mysql
-      - $HOME/golang/utils/future_mysql.sql:/docker-entrypoint-initdb.d/future.sql
+  # mysql:
+  #   image: mysql/mysql-server:latest
+  #   ports: 
+  #     - 3306:3306
+  #     - 33060:33060
+  #   command: --default-authentication-plugin=mysql_native_password
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=123456
+  #   volumes:
+  #     - $HOME/docker_volumes/mysql:/var/lib/mysql
+  #     - $HOME/golang/utils/future_mysql.sql:/docker-entrypoint-initdb.d/future.sql
 
-  redis:
-    image: redis
-    ports:
-      - 6379:6379
-    volumes:
-      - $HOME/docker_volumes/redis:/data
-  
+  # postgres:
+  #   image: postgres
+  #   environment: 
+  #     - POSTGRES_PASSWORD=123456
+  #   ports:
+  #     - 5432:5432
+  #   volumes:
+  #     - $HOME/docker_volumes/postgres:/var/lib/postgresql/data
+  #     - $HOME/golang/utils/future_postgres.sql:/docker-entrypoint-initdb.d/future_postgres.sql
+
   # mongo:
   #   image: mongo:latest
   #   ports:
@@ -73,14 +73,13 @@ services:
   #     - 2379:2379
   #     - 2380:2380
 
-  # pulsar:
-  #   image: apachepulsar/pulsar:2.8.1
-  #   ports:
-  #     - 6650:6650
-  #     - 8080:8080
-  #   environment:
-  #     PULSAR_MEM: " -Xms512m -Xmx512m -XX:MaxDirectMemorySize=1g"    
-  #   command: bin/pulsar standalone
+  pulsar:
+    image: apachepulsar/pulsar
+    restart: always
+    ports:
+      - 6650:6650
+      - 8080:8080  
+    command: bin/pulsar standalone
       
   # nats: 
   #   image: nats
@@ -144,23 +143,23 @@ services:
   #     - MICRO_REGISTRY=etcd
   #     - MICRO_REGISTRY_ADDRESS=etcd:2379
 
-  elasticsearch:
-    image: elasticsearch:7.14.2
-    ports: 
-      - 9200:9200
-    environment:
-      discovery.type: "single-node"
-      ES_JAVA_OPTS: " -Xms256m -Xmx256m"
-    volumes:
-      - $HOME/docker_volumes/elasticsearch:/usr/share/elasticsearch/data
+  # elasticsearch:
+  #   image: elasticsearch:7.14.2
+  #   ports: 
+  #     - 9200:9200
+  #   environment:
+  #     discovery.type: "single-node"
+  #     ES_JAVA_OPTS: " -Xms256m -Xmx256m"
+  #   volumes:
+  #     - $HOME/docker_volumes/elasticsearch:/usr/share/elasticsearch/data
     
-  kibana:
-    image: kibana:7.14.2
-    ports:
-      - 5601:5601
-    volumes:
-      - $HOME/docker_volumes/kibana.yml:/usr/share/kibana/config/kibana.yml
-    # docker cp $HOME/kibana.yml crawler_kibana_1:/usr/share/kibana/config/kibana.yml
+  # kibana:
+  #   image: kibana:7.14.2
+  #   ports:
+  #     - 5601:5601
+  #   volumes:
+  #     - $HOME/docker_volumes/kibana.yml:/usr/share/kibana/config/kibana.yml
+  #   # docker cp $HOME/kibana.yml crawler_kibana_1:/usr/share/kibana/config/kibana.yml
   
   # jaeger-collector:
   #   image: jaegertracing/jaeger-collector
@@ -242,27 +241,27 @@ services:
   #   volumes:
   #     - $HOME/docker_volumes/gogs:/data
 
-  gitea:
-    image: gitea/gitea
-    container_name: gitea
-    environment:
-      - USER_UID=1000
-      - USER_GID=1000
-      - GITEA__database__DB_TYPE=postgres
-      - GITEA__database__HOST=10.86.12.184:5432
-      - GITEA__database__NAME=gitea
-      - GITEA__database__USER=postgres
-      - GITEA__database__PASSWD=123456
-    depends_on: 
-      - postgres
-    restart: always
-    volumes:
-      - $HOME/docker_volumes/gitea:/data
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
-    ports:
-      - "3000:3000"
-      - "222:22"
+  # gitea:
+  #   image: gitea/gitea
+  #   container_name: gitea
+  #   environment:
+  #     - USER_UID=1000
+  #     - USER_GID=1000
+  #     - GITEA__database__DB_TYPE=postgres
+  #     - GITEA__database__HOST=10.86.12.184:5432
+  #     - GITEA__database__NAME=gitea
+  #     - GITEA__database__USER=postgres
+  #     - GITEA__database__PASSWD=123456
+  #   depends_on: 
+  #     - postgres
+  #   restart: always
+  #   volumes:
+  #     - $HOME/docker_volumes/gitea:/data
+  #     - /etc/timezone:/etc/timezone:ro
+  #     - /etc/localtime:/etc/localtime:ro
+  #   ports:
+  #     - "3000:3000"
+  #     - "222:22"
 
   # drone:
   #   image: drone/drone
@@ -326,7 +325,7 @@ services:
   #   volumes:
   #     # So that Traefik can listen to the Docker events
   #     - /var/run/docker.sock:/var/run/docker.sock
-  #     - /Users/liuyu/docker_volumes/traefik/traefik.toml
+  #     - /$HOME/docker_volumes/traefik/traefik.toml
 
   # # # 改镜像会暴露出自身的 `header` 信息
   # # whoami:

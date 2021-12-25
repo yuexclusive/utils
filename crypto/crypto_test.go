@@ -6,11 +6,11 @@ import (
 
 const (
 	testContent = "hello world 321"
-	testKey     = "89357601"
+	testKey     = "8935760112796693"
 )
 
-func TestEncryptDES_CBC(t *testing.T) {
-	encryptStr, err := EncryptDES_CBC(testContent, testKey)
+func TestEncryptAES_CBC(t *testing.T) {
+	encryptStr, err := EncryptAES_CBC(testContent, testKey)
 
 	t.Log(encryptStr)
 
@@ -18,7 +18,7 @@ func TestEncryptDES_CBC(t *testing.T) {
 		t.Error(err)
 	}
 
-	res, err := DecryptDES_CBC(encryptStr, testKey)
+	res, err := DecryptAES_CBC(encryptStr, testKey)
 
 	if err != nil {
 		t.Error(err)
@@ -29,8 +29,8 @@ func TestEncryptDES_CBC(t *testing.T) {
 	}
 }
 
-func TestEncryptDES_ECB(t *testing.T) {
-	encryptStr, err := EncryptDES_ECB(testContent, testKey)
+func TestEncryptAES_ECB(t *testing.T) {
+	encryptStr, err := EncryptAES_ECB(testContent, testKey)
 
 	t.Log(encryptStr)
 
@@ -38,7 +38,7 @@ func TestEncryptDES_ECB(t *testing.T) {
 		t.Error(err)
 	}
 
-	res, err := DecryptDES_ECB(encryptStr, testKey)
+	res, err := DecryptAES_ECB(encryptStr, testKey)
 	if err != nil {
 		t.Error(err)
 	}

@@ -6,25 +6,20 @@ import (
 )
 
 type CustomerConfig struct {
-	Config    `mapstructure:"config"`
+	Config
 	Customers []string `mapstructure:"customers"`
 }
 
 func TestCustomer(t *testing.T) {
-	var c CustomerConfig
 
-	Init(TOML, "./customer_config.toml", &c)
+	driver := Init[CustomerConfig](TOML, "./customer_config.toml")
 
-	cfg, err := Default()
-
-	if err != nil {
-		t.Error(err)
-	}
+	cfg := driver.GetConfig()
 
 	if got, want := cfg.Name, "example.srv"; got != want {
 		t.Errorf("got: %s, want: %s", got, want)
 	}
-	if got, want := c.Customers, []string{"aa", "bb", "cc"}; !reflect.DeepEqual(got, want) {
+	if got, want := cfg.Customers, []string{"aa", "bb", "cc"}; !reflect.DeepEqual(got, want) {
 		t.Errorf("got: %s, want: %s", got, want)
 	}
 }

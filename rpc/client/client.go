@@ -20,6 +20,8 @@ type Config struct {
 	config.Config `mapstructure:"config"`
 }
 
+type TLSOption struct{}
+
 func Dial(name string, token string, dialOptions ...grpc.DialOption) (io.Closer, *grpc.ClientConn, error) {
 	var opts []grpc.DialOption
 	if token != "" {

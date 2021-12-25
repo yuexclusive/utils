@@ -2,8 +2,8 @@ package crypto
 
 import (
 	"bytes"
+	"crypto/aes"
 	"crypto/cipher"
-	"crypto/des"
 	"crypto/sha256"
 	"encoding/hex"
 	"errors"
@@ -40,10 +40,10 @@ func checkImportContent(content string) (string, error) {
 }
 
 //CBC加密
-func EncryptDES_CBC(src, key string) (string, error) {
+func EncryptAES_CBC(src, key string) (string, error) {
 	data := []byte(src)
 	keyByte := []byte(key)
-	block, err := des.NewCipher(keyByte)
+	block, err := aes.NewCipher(keyByte)
 	if err != nil {
 		return "", err
 	}
@@ -57,7 +57,7 @@ func EncryptDES_CBC(src, key string) (string, error) {
 }
 
 //CBC解密
-func DecryptDES_CBC(src, key string) (string, error) {
+func DecryptAES_CBC(src, key string) (string, error) {
 	var err error
 	if src, err = checkImportContent(src); err != nil {
 		return "", err
@@ -67,7 +67,7 @@ func DecryptDES_CBC(src, key string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	block, err := des.NewCipher(keyByte)
+	block, err := aes.NewCipher(keyByte)
 	if err != nil {
 		return "", err
 	}
@@ -80,10 +80,10 @@ func DecryptDES_CBC(src, key string) (string, error) {
 }
 
 //ECB加密
-func EncryptDES_ECB(src, key string) (string, error) {
+func EncryptAES_ECB(src, key string) (string, error) {
 	data := []byte(src)
 	keyByte := []byte(key)
-	block, err := des.NewCipher(keyByte)
+	block, err := aes.NewCipher(keyByte)
 	if err != nil {
 		return "", err
 	}
@@ -106,7 +106,7 @@ func EncryptDES_ECB(src, key string) (string, error) {
 }
 
 //ECB解密
-func DecryptDES_ECB(src, key string) (string, error) {
+func DecryptAES_ECB(src, key string) (string, error) {
 	var err error
 	if src, err = checkImportContent(src); err != nil {
 		return "", err
@@ -116,7 +116,7 @@ func DecryptDES_ECB(src, key string) (string, error) {
 		return "", err
 	}
 	keyByte := []byte(key)
-	block, err := des.NewCipher(keyByte)
+	block, err := aes.NewCipher(keyByte)
 	if err != nil {
 		return "", err
 	}

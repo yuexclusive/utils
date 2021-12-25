@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-deployment
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql/mysql-server:latest
+          ports: 
+            - containerPort: 3306
+          # command: ["--default-authentication-plugin=mysql_native_password"]
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: v1
+            - mountPath: /docker-entrypoint-initdb.d/future.sql
+              name: v2
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "123456"
+      volumes:
+        - name: v1
+          hostPath: 
+            path: /Users/yu/docker_volumes/mysql
+            type: DirectoryOrCreate
+
+        - name: v2
+          hostPath:
+            path: /Users/yu/golang/utils/future_mysql.sql
+            type: File
+
+
+--- 
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-service
+spec:
+  selector:
+    app: mysql
+  type: NodePort
+  ports:
+  - protocol: TCP
+    port: 30002
+    targetPort: 3306
+    nodePort: 30002

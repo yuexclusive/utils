@@ -1,9 +1,6 @@
 package config
 
 import (
-	"fmt"
-	"reflect"
-
 	"github.com/spf13/viper"
 )
 
@@ -19,63 +16,44 @@ const (
 	JSON FileType = "json"
 )
 
-// IConfigDriver IConfigDriver
-type IConfigDriver interface {
-	Read(obj interface{}) error
-	Default() DefaultConfig
+// IDriver IDriver
+type IDriver[T any] interface {
+	GetType() FileType
+	GetPath() string
+	Read() error
+	GetConfig() T
 }
 
 // Driver Driver
-type Driver struct {
-	Type          FileType
-	DefaultConfig DefaultConfig
-	Path          string
+type Driver[T any] struct {
+	fileType FileType
+	path     string
+	config   T
 }
 
-// NewDriver NewDriver
-func NewDriver(t FileType, path string) IConfigDriver {
-	return &Driver{Type: t, Path: path}
-}
+func (d *Driver[T]) GetType() FileType { return d.fileType }
+func (d *Driver[T]) GetPath() string   { return d.path }
+func (d *Driver[T]) Read() error {
+	var cfg T
+	viper.SetConfigType(string(d.fileType))
 
-// Init Init
-func (d *Driver) Read(obj interface{}) error {
-	viper.SetConfigType(string(d.Type))
-	viper.SetConfigFile(d.Path)
+	viper.SetConfigFile(d.path)
 
 	if err := viper.ReadInConfig(); err != nil {
 		return err
 	}
 
-	var defaultConfig DefaultConfig
-
-	if err := viper.Unmarshal(&defaultConfig); err != nil {
+	if err := viper.Unmarshal(&cfg); err != nil {
 		return err
 	}
-
-	d.DefaultConfig = defaultConfig
-
-	if obj != nil {
-		objType := reflect.TypeOf(obj)
-
-		if field, ok := objType.Elem().FieldByName("Config"); ok {
-			if field.Type.String() != "config.Config" {
-				return fmt.Errorf("obj must have field config.Config")
-			}
-		} else {
-			return fmt.Errorf("obj must have field config.Config")
-		}
-
-		if objType.Kind() != reflect.Ptr {
-			return fmt.Errorf("config Init: obj must be ptr type")
-		}
-		if err := viper.Unmarshal(obj); err != nil {
-			return err
-		}
-	}
+	d.config = cfg
 	return nil
 }
 
-// Default Default
-func (d *Driver) Default() DefaultConfig {
-	return d.DefaultConfig
+func (d *Driver[T]) GetConfig() T {
+	return d.config
+}
+
+func NewDriver[T any](fileType FileType, path string) IDriver[T] {
+	return &Driver[T]{fileType: fileType, path: path}
 }

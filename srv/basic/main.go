@@ -6,7 +6,6 @@ import (
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/yuexclusive/utils/logger"
 	"github.com/yuexclusive/utils/rpc"
 	"github.com/yuexclusive/utils/rpc/middleware/auth"
 	"google.golang.org/grpc"
@@ -21,10 +20,6 @@ import (
 	"github.com/yuexclusive/utils/srv/basic/proto/role"
 	"github.com/yuexclusive/utils/srv/basic/proto/user"
 )
-
-var l = logger.Single()
-
-var sugar = l.Sugar()
 
 func main() {
 	tracer, closer, err := trace.Tracer()

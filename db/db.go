@@ -10,96 +10,35 @@ import (
 )
 
 const (
-	DefaultClientName = "default_client"
+	_defaultClientName    = "default_client"
+	_defaultWatchDuration = time.Second * 5
 )
 
-// DB DB
-type DB struct {
+type Client struct {
 	*gorm.DB
+	Closed bool
 }
 
-// toDB toDB transfer *gorm.DB to *DB
-func toDB(gdb *gorm.DB) *DB {
-	return &DB{gdb}
-}
-
-func open(dialector gorm.Dialector, cfg *Config) error {
-	name := DefaultClientName
-	if cfg != nil {
-		name = cfg.Name
-	}
-
-	if client, ok := mapClient[name]; ok {
-		if !client.Closed {
-			return nil
-		}
-	}
-
-	var (
-		gdb *gorm.DB
-		err error
-	)
-	if cfg != nil {
-		gdb, err = gorm.Open(dialector, cfg)
-	} else {
-		gdb, err = gorm.Open(dialector)
-	}
+func Open(name string, dialector gorm.Dialector, opts ...gorm.Option) error {
+	db, err := gorm.Open(dialector, opts...)
 
 	if err != nil {
 		return err
 	}
 
-	if cfg != nil {
-		if cfg.MaxIdleConns != nil || cfg.MaxOpenConns != nil {
-			sqldb, err := gdb.DB()
-
-			if err != nil {
-				return err
-			}
-
-			if cfg.MaxIdleConns != nil {
-				sqldb.SetMaxIdleConns(*cfg.MaxIdleConns)
-			}
-
-			if cfg.MaxOpenConns != nil {
-				sqldb.SetMaxOpenConns(*cfg.MaxOpenConns)
-			}
-		}
+	if name == "" {
+		name = _defaultClientName
 	}
 
-	if cfg == nil {
-		cfg = toConfig(gdb.Config)
-		cfg.Name = name
-	}
-
-	mapClient[name] = &Client{DB: toDB(gdb), Config: cfg, Closed: false}
+	mapClient[name] = &Client{DB: db, Closed: false}
 	return nil
-}
-
-type Client struct {
-	*DB
-	Config *Config
-	Closed bool
 }
 
 var mapClient = make(map[string]*Client)
 
-func Init(dialector gorm.Dialector, cfgs ...*Config) {
-	var cfg *Config
-
-	for _, v := range cfgs {
-		if v != nil {
-			cfg = v
-		}
-	}
-	if err := open(dialector, cfg); err != nil {
-		log.Fatal("init db failed", "err", err)
-	}
-}
-
 func GetDefaultClient() *Client {
-	if v, ok := mapClient[DefaultClientName]; !ok {
-		panic(fmt.Sprintf("please init client %s first", DefaultClientName))
+	if v, ok := mapClient[_defaultClientName]; !ok {
+		panic(fmt.Sprintf("please init client %s first", _defaultClientName))
 	} else {
 		return v
 	}
@@ -117,10 +56,6 @@ func init() {
 	go watch()
 }
 
-const (
-	_defaultWatchDuration = time.Second * 5
-)
-
 var watchMutex sync.Mutex
 
 func watch() {
@@ -136,7 +71,7 @@ func ping() {
 	defer watchMutex.Unlock()
 	for name, v := range mapClient {
 		if !v.Closed {
-			if sqldb, err := v.DB.DB.DB(); err != nil {
+			if sqldb, err := v.DB.DB(); err != nil {
 				v.Closed = true
 				log.Error("get sql db failed", "name", name, "err", err)
 			} else {
@@ -155,7 +90,7 @@ func recover() {
 	defer watchMutex.Unlock()
 	for name, v := range mapClient {
 		if v.Closed {
-			if err := open(v.Dialector, v.Config); err != nil {
+			if err := Open(name, v.Dialector, v.Config); err != nil {
 				log.Error("recover db failed", "name", name, "err", err)
 			} else {
 				log.Error("recover db successful", "name", name)

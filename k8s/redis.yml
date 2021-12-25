@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-deployment
+spec:
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:latest
+          ports: 
+            - containerPort: 6379
+          command: ["redis-server"]
+          volumeMounts:
+            - mountPath: /data
+              name: v1
+      volumes:
+        - name: v1
+          hostPath: 
+            path: /Users/yu/docker_volumes/redis
+            type: DirectoryOrCreate
+
+
+--- 
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+spec:
+  selector:
+    app: redis
+  type: NodePort
+  ports:
+  - protocol: TCP
+    port: 30001
+    targetPort: 6379
+    nodePort: 30001
+

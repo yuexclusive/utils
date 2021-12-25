@@ -1,32 +1,25 @@
 package config
 
 import (
-	"errors"
-	"fmt"
-)
-
-var (
-	_driver IConfigDriver
+	_ "embed"
 )
 
 // Init Init
 // path: path of config file
 // t: type of config file, it can be json\toml\yaml
 // obj optinal，ptr type object, like &obj
-func Init(t FileType, path string, obj interface{}) {
-	if _driver != nil {
-		panic(errors.New("you can only have one config"))
+func Init[T any](fileType FileType, path string) IDriver[T] {
+	driver := NewDriver[T](fileType, path)
+
+	if err := driver.Read(); err != nil {
+		panic(err)
 	}
-	_driver = NewDriver(t, path)
-	if err := _driver.Read(obj); err != nil {
-		panic(fmt.Errorf("read config failed, error: %w", err))
-	}
+	return driver
 }
 
-// Default default config
-func Default() (DefaultConfig, error) {
-	if _driver == nil {
-		return DefaultConfig{}, errors.New("please init config first")
-	}
-	return _driver.Default(), nil
+//go:embed config.toml
+var defaultConfig string
+
+func DefaultConfigFile() string {
+	return defaultConfig
 }
