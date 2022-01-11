@@ -52,6 +52,6 @@ func InitClient(config *Config) error {
 	return nil
 }
 
-func Client() *elastic.Client {
+func GetClient() *elastic.Client {
 	return client
 }

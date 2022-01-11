@@ -19,9 +19,9 @@ spec:
           command: ["redis-server"]
           volumeMounts:
             - mountPath: /data
-              name: v1
+              name: data
       volumes:
-        - name: v1
+        - name: data
           hostPath: 
             path: /Users/yu/docker_volumes/redis
             type: DirectoryOrCreate

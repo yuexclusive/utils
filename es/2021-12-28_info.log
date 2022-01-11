@@ -1,0 +1,10 @@
+2021-12-28T16:06:25+08:00	[34mINFO[0m	log/log.go:31	connected to es cluster successed	{"cluster name": "docker-cluster", "number": "7.14.2"}
+2021-12-28T16:10:44+08:00	[34mINFO[0m	log/log.go:31	connected to es cluster successed	{"cluster name": "docker-cluster", "number": "7.14.2"}
+2021-12-28T16:11:03+08:00	[34mINFO[0m	log/log.go:31	connected to es cluster successed	{"cluster name": "docker-cluster", "number": "7.14.2"}
+2021-12-28T16:13:19+08:00	[34mINFO[0m	log/log.go:31	connected to es cluster successed	{"cluster name": "docker-cluster", "number": "7.14.2"}
+2021-12-28T16:14:54+08:00	[34mINFO[0m	log/log.go:31	connected to es cluster successed	{"cluster name": "docker-cluster", "number": "7.14.2"}
+2021-12-28T16:15:29+08:00	[34mINFO[0m	log/log.go:31	connected to es cluster successed	{"cluster name": "docker-cluster", "number": "7.14.2"}
+2021-12-28T16:15:43+08:00	[34mINFO[0m	log/log.go:31	connected to es cluster successed	{"cluster name": "docker-cluster", "number": "7.14.2"}
+2021-12-28T16:16:12+08:00	[34mINFO[0m	log/log.go:31	connected to es cluster successed	{"cluster name": "docker-cluster", "number": "7.14.2"}
+2021-12-28T16:16:32+08:00	[34mINFO[0m	log/log.go:31	connected to es cluster successed	{"cluster name": "docker-cluster", "number": "7.14.2"}
+2021-12-28T16:16:58+08:00	[34mINFO[0m	log/log.go:31	connected to es cluster successed	{"cluster name": "docker-cluster", "number": "7.14.2"}

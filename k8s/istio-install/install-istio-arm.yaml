@@ -1,0 +1,29 @@
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  namespace: istio-system
+  name: example-istiocontrolplane
+spec:
+  hub: docker.io/querycapistio
+  profile: demo
+  components:
+    pilot:
+      k8s: # each components have to set this
+        affinity: &affinity
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+                - matchExpressions:
+                    - key: kubernetes.io/arch
+                      operator: In
+                      values:
+                        - arm64
+                        - amd64
+    egressGateways:
+      - name: "istio-egressgateway"
+        k8s:
+          affinity: *affinity
+    ingressGateways:
+      - name: "istio-ingressgateway"
+        k8s:
+          affinity: *affinity

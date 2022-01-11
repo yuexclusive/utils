@@ -18,16 +18,17 @@ type Client struct {
 }
 
 var clientMapLock sync.Mutex
-var clientMap = make(map[ClientName]*Client)
+var clientMap = make(map[string]*Client)
 
 // GetClient 根据name获取客户端连接
-func GetClient(name ClientName) *Client {
-	return clientMap[name]
+func GetClient(name string) *Client {
+	res := clientMap[name]
+	return res
 }
 
 // InitClient 初始化连接
 func InitClient(config *Config) error {
-	check := func(name ClientName, m map[ClientName]*Client) bool {
+	check := func(name string, m map[string]*Client) bool {
 		if v, ok := m[config.ClientName]; ok && v != nil {
 			if _, err := v.Ping().Result(); err == nil {
 				return true
@@ -88,8 +89,8 @@ func monitoring() {
 }
 
 // getExpirationConn 获取过期连接
-func ping() []ClientName {
-	r := make([]ClientName, 0, 1)
+func ping() []string {
+	r := make([]string, 0, 1)
 	clientMapLock.Lock()
 	defer clientMapLock.Unlock()
 
@@ -129,7 +130,7 @@ func connect(config *Config) (*redis.Client, error) {
 }
 
 // reconnect 重连
-func reconnect(c []ClientName) {
+func reconnect(c []string) {
 	for _, v := range c {
 		config := clientMap[v].Config
 		err := InitClient(config)

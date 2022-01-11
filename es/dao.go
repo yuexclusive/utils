@@ -2,10 +2,10 @@ package es
 
 import elastic "github.com/olivere/elastic/v7"
 
-type Cao struct {
+type Dao struct {
 	Client *elastic.Client
 }
 
-func NewCao() *Cao {
-	return &Cao{Client: Client()}
+func NewCao() *Dao {
+	return &Dao{Client: GetClient()}
 }

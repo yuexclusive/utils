@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: es-deployment
+spec:
+  selector:
+    matchLabels:
+      app: es
+  template:
+    metadata:
+      labels:
+        app: es
+    spec:
+      containers:
+        - name: es
+          image: elasticsearch:7.14.2
+          ports: 
+            - containerPort: 9200
+          env:
+            - name: discovery.type
+              value: "single-node"
+            - name: ES_JAVA_OPTS
+              value: " -Xms512m -Xmx512m"
+          volumeMounts:
+            - name: v1
+              mountPath: /usr/share/elasticsearch/data
+      volumes:
+        - name: v1
+          hostPath: 
+            path: /Users/yu/docker_volumes/elasticsearch
+            type: DirectoryOrCreate
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: es-service
+spec:
+  selector:
+    app: es
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 30005
+      targetPort: 9200
+      nodePort: 30005

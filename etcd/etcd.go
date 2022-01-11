@@ -11,5 +11,6 @@ func Client(address []string) (*etcd.Client, error) {
 		Endpoints:   address,
 		DialTimeout: 10 * time.Second,
 	}
-	return etcd.New(config)
+	res, err := etcd.New(config)
+	return res, err
 }
