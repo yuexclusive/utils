@@ -5,5 +5,5 @@ import (
 )
 
 func TestLog(t *testing.T) {
-	_driver.Logger().Error("test")
+	Error("test")
 }
