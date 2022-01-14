@@ -95,10 +95,10 @@ func (z *Zap) getLogWriter(level string) zapcore.WriteSyncer {
 		filePath = z.zapConfig.Path
 	}
 	hook, err := rotatelogs.New(
-		path.Join(filePath, "%Y-%m-%d_"+fmt.Sprintf("%s.log", level)),
-		// path.Join(d.ZapConfig.Path, "%Y-%m-%d-%H_"+fmt.Sprintf("%s.log", level)),
+		// path.Join(filePath, "%Y-%m-%d_"+fmt.Sprintf("%s.log", level)),
+		path.Join(filePath, "%Y-%m-%d-%H_"+fmt.Sprintf("%s.log", level)),
 		rotatelogs.WithRotationTime(time.Hour),
-		rotatelogs.WithMaxAge(time.Hour*24*7),
+		rotatelogs.WithMaxAge(time.Hour*12),
 	)
 
 	if err != nil {

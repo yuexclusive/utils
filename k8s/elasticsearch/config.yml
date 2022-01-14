@@ -10,6 +10,15 @@ data:
       }
     }
 
+    filter {
+      grok {
+        match => { "message" => "%{COMBINEDAPACHELOG}" }
+      }
+      date {
+        match => [ "timestamp" , "dd/MMM/yyyy:HH:mm:ss Z" ]
+      }
+    }
+
     output {
       elasticsearch {
         hosts => ["elasticsearch:9200"]
@@ -36,13 +45,13 @@ data:
       #index.codec: best_compression
       #_source.enabled: false
 
-    # output.logstash:
-    #   # The Logstash hosts
-    #   hosts: ["logstash:5044"]
+    output.logstash:
+      # The Logstash hosts
+      hosts: ["logstash:5044"]
 
-    output.elasticsearch:
-      # Array of hosts to connect to.
-      hosts: ["elasticsearch:9200"]
+    # output.elasticsearch:
+    #   # Array of hosts to connect to.
+    #   hosts: ["elasticsearch:9200"]
 
     processors:
       - add_host_metadata:
