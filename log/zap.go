@@ -21,7 +21,7 @@ import (
 
 const (
 	// DevelopMode dev mod config
-	DevelopMode = "develop"
+	Production = "production"
 )
 
 // Zap Zap
@@ -73,11 +73,13 @@ func (z *Zap) initLogger() {
 		zap.AddCaller(),
 	}
 
-	if z.zapConfig != nil && strings.ToLower(strings.TrimSpace(z.zapConfig.Mode)) == DevelopMode {
+	if z.zapConfig == nil || strings.ToLower(strings.TrimSpace(z.zapConfig.Mode)) != Production {
 		options = append(options, zap.Development())
 	}
 
-	z.zapLogger = zap.New(cores, options...)
+	logger := zap.New(cores, options...)
+
+	z.zapLogger = logger
 }
 
 // newCore newCore

@@ -18,6 +18,13 @@ spec:
           image: yuexclusive/test:latest
           ports:
             - containerPort: 8080
+          volumeMounts:
+            - name: config-volume
+              mountPath: /configs/
+      volumes:
+        - name: config-volume
+          configMap:
+            name: test-configmap
 
 ---
 
@@ -41,7 +48,13 @@ spec:
           image: yuexclusive/test:latest
           ports:
             - containerPort: 8080
-
+          volumeMounts:
+            - name: config-volume
+              mountPath: /configs/
+      volumes:
+      - name: config-volume
+        configMap:
+          name: test-configmap
 ---
 
 apiVersion: apps/v1
@@ -64,6 +77,13 @@ spec:
           image: yuexclusive/test:latest
           ports:
             - containerPort: 8080
+          volumeMounts:
+            - name: config-volume
+              mountPath: /configs/
+      volumes:
+      - name: config-volume
+        configMap:
+          name: test-configmap
 
 --- 
 

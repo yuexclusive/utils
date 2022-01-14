@@ -1,7 +1,7 @@
 #!/bin/zsh
 
 # istio
-kind create cluster --name=istio
+kind create cluster --name=istio --config=single-node.yaml
 
 istioctl install -f ./install-istio-arm.yaml -y
 

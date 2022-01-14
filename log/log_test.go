@@ -7,5 +7,5 @@ import (
 )
 
 func TestLog(t *testing.T) {
-	Error("error", zap.String("name", "this is a test log"))
+	Panic("error", zap.String("name", "this is a test log"))
 }
