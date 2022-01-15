@@ -70,7 +70,7 @@ func (z *Zap) initLogger() {
 	)
 
 	options := []zap.Option{
-		zap.AddCaller(),
+		// zap.AddCaller(),
 		zap.AddStacktrace(zapcore.ErrorLevel),
 	}
 
