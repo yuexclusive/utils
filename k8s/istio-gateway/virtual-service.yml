@@ -18,7 +18,8 @@ spec:
     - destination:
         port:
           number: 80
-        host: test2
+        host: test
+        subset: v2
   - match:
     - uri:
         prefix: /
@@ -28,10 +29,19 @@ spec:
           number: 80
         host: test
         subset: v1
-      weight: 20
-    - destination:
-        port:
-          number: 80
-        host: test
-        subset: v2
-      weight: 80
+  # - match:
+  #   - uri:
+  #       prefix: /
+  #   route:
+  #   - destination:
+  #       port:
+  #         number: 80
+  #       host: test
+  #       subset: v1
+  #     weight: 20
+  #   - destination:
+  #       port:
+  #         number: 80
+  #       host: test
+  #       subset: v2
+  #     weight: 80

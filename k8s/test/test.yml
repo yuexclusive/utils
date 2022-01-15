@@ -22,7 +22,7 @@ spec:
             - name: config-volume
               mountPath: /configs/
             - name: log
-              mountPath: /app/
+              mountPath: /app/log
 
         - name: filebeat
           image: docker.elastic.co/beats/filebeat:7.16.3
@@ -30,8 +30,8 @@ spec:
             - name: config-volume
               mountPath: /usr/share/filebeat/filebeat.yml
               subPath: filebeat.yml
-            # - name: log
-            #   mountPath: /usr/share/filebeat/test
+            - name: log
+              mountPath: /usr/share/filebeat/test
             
       volumes:
         - name: config-volume
@@ -69,64 +69,5 @@ spec:
       - name: config-volume
         configMap:
           name: test-configmap
----
-
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: test-deployment-v3
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: test
-  template:
-    metadata:
-      labels:
-        app: test
-        version: v3
-    spec:
-      containers:
-        - name: test
-          image: yuexclusive/test:latest
-          ports:
-            - containerPort: 8080
-          volumeMounts:
-            - name: config-volume
-              mountPath: /configs/
-      volumes:
-      - name: config-volume
-        configMap:
-          name: test-configmap
-
---- 
-
-apiVersion: v1
-kind: Service
-metadata:
-  name: test
-spec:
-  ports:
-  - name: http
-    port: 80
-    targetPort: 8080
-  selector:
-    app: test
-
---- 
-
-apiVersion: v1
-kind: Service
-metadata:
-  name: test2
-spec:
-  ports:
-  - name: http
-    port: 80
-    targetPort: 8080
-  selector:
-    app: test
-    version: v3
-
 
       
