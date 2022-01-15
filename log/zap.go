@@ -59,7 +59,7 @@ func (z *Zap) initConfig() {
 // new logger
 func (z *Zap) initLogger() {
 	cores := zapcore.NewTee(
-		zapcore.NewCore(zapcore.NewConsoleEncoder(z.getEncoderConfig()), os.Stdout, zapcore.DebugLevel),
+		zapcore.NewCore(zapcore.NewConsoleEncoder(z.getConsoleEncoderConfig()), os.Stdout, zapcore.DebugLevel),
 		z.newCore(zapcore.DebugLevel),
 		z.newCore(zapcore.InfoLevel),
 		z.newCore(zapcore.WarnLevel),
@@ -71,7 +71,7 @@ func (z *Zap) initLogger() {
 
 	options := []zap.Option{
 		zap.AddCaller(),
-		zap.AddStacktrace(zapcore.DebugLevel),
+		zap.AddStacktrace(zapcore.ErrorLevel),
 	}
 
 	if z.zapConfig == nil || strings.ToLower(strings.TrimSpace(z.zapConfig.Mode)) != Production {
@@ -85,7 +85,7 @@ func (z *Zap) initLogger() {
 
 // newCore newCore
 func (z *Zap) newCore(level zapcore.Level) zapcore.Core {
-	return zapcore.NewCore(zapcore.NewJSONEncoder(z.getEncoderConfig()), z.getLogWriter(level.String()), Level(level))
+	return zapcore.NewCore(zapcore.NewJSONEncoder(z.getJsonEncoderConfig()), z.getLogWriter(level.String()), Level(level))
 }
 
 // getLogWriter 写入文件
@@ -107,10 +107,16 @@ func (z *Zap) getLogWriter(level string) zapcore.WriteSyncer {
 	return zapcore.AddSync(hook)
 }
 
-func (z *Zap) getEncoderConfig() zapcore.EncoderConfig {
+func (z *Zap) getConsoleEncoderConfig() zapcore.EncoderConfig {
 	encoderConfig := zap.NewProductionEncoderConfig()
 	encoderConfig.EncodeTime = zapcore.RFC3339TimeEncoder        // 时间格式 RFC3339
 	encoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder // 级别大写+颜色显示
+	return encoderConfig
+}
+
+func (z *Zap) getJsonEncoderConfig() zapcore.EncoderConfig {
+	encoderConfig := zap.NewProductionEncoderConfig()
+	encoderConfig.EncodeTime = zapcore.RFC3339TimeEncoder // 时间格式 RFC3339
 	return encoderConfig
 }
 
