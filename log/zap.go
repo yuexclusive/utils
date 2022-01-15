@@ -90,7 +90,7 @@ func (z *Zap) newCore(level zapcore.Level) zapcore.Core {
 
 // getLogWriter 写入文件
 func (z *Zap) getLogWriter(level string) zapcore.WriteSyncer {
-	filePath := ""
+	filePath := "./log"
 	if z.zapConfig != nil {
 		filePath = z.zapConfig.Path
 	}
