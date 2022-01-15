@@ -25,7 +25,7 @@ type Mongo struct {
 type Log struct {
 	// Path path of log file
 	Path string `mapstructure:"path"`
-	// Mode "develop" means develop mode
+	// Mode "production" means production mode
 	Mode string `mapstructure:"mode"`
 }
 
