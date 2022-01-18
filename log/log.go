@@ -1,11 +1,5 @@
 package log
 
-import (
-	"time"
-
-	"github.com/gin-gonic/gin"
-)
-
 var (
 	_driver *Zap
 )
@@ -60,10 +54,4 @@ func Panic(msg string, keysAndValues ...interface{}) {
 // variadic key-value pairs are treated as they are in With.
 func Fatal(msg string, keysAndValues ...interface{}) {
 	_driver.Sugar().Fatalw(msg, keysAndValues...)
-}
-
-// GinUseZap GinUseZap
-func GinUseZap(engine *gin.Engine) {
-	engine.Use(_driver.Ginzap(time.RFC3339, true))
-	engine.Use(_driver.RecoveryWithZap(true))
 }

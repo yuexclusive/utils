@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+spec:
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:latest
+          ports: 
+            - containerPort: 5432
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: v1
+            - mountPath: /docker-entrypoint-initdb.d/future_postgres.sql
+              name: v2
+          env:
+            - name: POSTGRES_PASSWORD
+              value: "123456"
+      volumes:
+        - name: v1
+          hostPath: 
+            path: /Users/yu/docker_volumes/postgres
+            type: DirectoryOrCreate
+
+        - name: v2
+          hostPath:
+            path: /Users/yu/golang/utils/future_postgres.sql
+            type: File
+
+
+--- 
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+spec:
+  selector:
+    app: postgres
+  ports:
+  - protocol: TCP
+    port: 5432
+    targetPort: 5432

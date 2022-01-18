@@ -1,6 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  namespace: elk
   name: logstash-config
 data:
   logstash.conf: |
@@ -11,14 +12,17 @@ data:
     }
 
     filter {
-      grok {
-        match => { "message" => "%{COMBINEDAPACHELOG}" }
+      json {
+        source => "message"
       }
     }
 
     output {
+      # stdout {
+      #   code => rubydebug
+      # }
       elasticsearch {
-        hosts => ["elasticsearch:9200"]
+        hosts => ["elasticsearch.stateful:9200"]
         index => "filebeat-%{+YYYY.MM.dd}"
         #user => "elastic"
         #password => "changeme"

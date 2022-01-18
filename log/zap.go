@@ -109,15 +109,15 @@ func (z *Zap) getLogWriter(level string) zapcore.WriteSyncer {
 
 func (z *Zap) getConsoleEncoderConfig() zapcore.EncoderConfig {
 	encoderConfig := zap.NewProductionEncoderConfig()
-	encoderConfig.EncodeTime = zapcore.RFC3339TimeEncoder        // 时间格式 RFC3339
+	encoderConfig.EncodeTime = zapcore.RFC3339NanoTimeEncoder    // 时间格式 RFC3339
 	encoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder // 级别大写+颜色显示
 	return encoderConfig
 }
 
 func (z *Zap) getESEncoderConfig() zapcore.EncoderConfig {
 	encoderConfig := zap.NewProductionEncoderConfig()
-	encoderConfig.EncodeTime = zapcore.RFC3339TimeEncoder   // 时间格式 RFC3339
-	encoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder // 级别大写+颜色显示
+	encoderConfig.EncodeTime = zapcore.RFC3339NanoTimeEncoder // 时间格式 RFC3339
+	encoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder   // 级别大写+颜色显示
 	return encoderConfig
 }
 
@@ -224,4 +224,10 @@ func (z *Zap) RecoveryWithZap(stack bool) gin.HandlerFunc {
 		}()
 		c.Next()
 	}
+}
+
+// GinUseZap GinUseZap
+func GinUseZap(engine *gin.Engine) {
+	engine.Use(_driver.Ginzap(time.RFC3339, true))
+	engine.Use(_driver.RecoveryWithZap(true))
 }

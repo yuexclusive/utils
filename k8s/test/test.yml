@@ -11,7 +11,11 @@ spec:
     metadata:
       labels:
         app: test
-        version: v1
+        version: v1.0.0
+      # annotations:
+      #   prometheus.io/scrape: "true"
+      #   prometheus.io/path: /metrics
+      #   prometheus.io/port: "8080"
     spec:
       containers:
         - name: test
@@ -20,7 +24,8 @@ spec:
             - containerPort: 8080
           volumeMounts:
             - name: config-volume
-              mountPath: /configs/
+              mountPath: /app/config.toml
+              subPath: config.toml
             - name: log
               mountPath: /app/log
 
@@ -31,7 +36,7 @@ spec:
               mountPath: /usr/share/filebeat/filebeat.yml
               subPath: filebeat.yml
             - name: log
-              mountPath: /usr/share/filebeat/test
+              mountPath: /usr/share/filebeat/files
             
       volumes:
         - name: config-volume
@@ -55,7 +60,7 @@ spec:
     metadata:
       labels:
         app: test
-        version: v2
+        version: v1.0.1
     spec:
       containers:
         - name: test
@@ -64,10 +69,39 @@ spec:
             - containerPort: 8080
           volumeMounts:
             - name: config-volume
-              mountPath: /configs/
+              mountPath: /app/config.toml
+              subPath: config.toml
+            - name: log
+              mountPath: /app/log
+
+        - name: filebeat
+          image: docker.elastic.co/beats/filebeat:7.16.3
+          volumeMounts:
+            - name: config-volume
+              mountPath: /usr/share/filebeat/filebeat.yml
+              subPath: filebeat.yml
+            - name: log
+              mountPath: /usr/share/filebeat/files
+            
       volumes:
-      - name: config-volume
-        configMap:
-          name: test-configmap
+        - name: config-volume
+          configMap:
+            name: test-configmap
+        - name: log
+          emptyDir: {}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: test
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: test
 
       
