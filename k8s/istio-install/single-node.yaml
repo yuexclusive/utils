@@ -5,3 +5,5 @@ nodes:
   extraMounts:
     - hostPath: /Users/yu/docker_volumes
       containerPath: /www
+    - hostPath: /var/run/docker.sock
+      containerPath: /var/run/docker.sock

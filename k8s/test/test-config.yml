@@ -65,7 +65,7 @@ data:
 
     output.logstash:
       # The Logstash hosts
-      hosts: ["logstash.elk:5044"]
+      hosts: ["logstash.stateless:5044"]
 
     # output.elasticsearch:
     #   # Array of hosts to connect to.

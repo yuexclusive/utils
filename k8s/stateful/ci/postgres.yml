@@ -1,8 +1,10 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
+  namespace: stateful
   name: postgres
 spec:
+  serviceName: "postgres"
   selector:
     matchLabels:
       app: postgres
@@ -18,29 +20,33 @@ spec:
             - containerPort: 5432
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
-              name: v1
+              name: postgres
             - mountPath: /docker-entrypoint-initdb.d/future_postgres.sql
-              name: v2
+              name: config-volume
+              subPath: future_postgres.sql
           env:
             - name: POSTGRES_PASSWORD
               value: "123456"
       volumes:
-        - name: v1
-          hostPath: 
-            path: /Users/yu/docker_volumes/postgres
-            type: DirectoryOrCreate
-
-        - name: v2
-          hostPath:
-            path: /Users/yu/golang/utils/future_postgres.sql
-            type: File
-
+        - name: config-volume
+          configMap: 
+            name: postgres-config
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "standard"
+      resources:
+        requests:
+          storage: 1Gi
 
 --- 
 
 apiVersion: v1
 kind: Service
 metadata:
+  namespace: stateful
   name: postgres
 spec:
   selector:
