@@ -12,7 +12,7 @@ type CustomerConfig struct {
 
 func TestCustomer(t *testing.T) {
 
-	driver := Init[CustomerConfig](TOML, "./customer_config.toml")
+	driver := Init[CustomerConfig]("./customer_config.toml")
 
 	cfg := driver.GetConfig()
 

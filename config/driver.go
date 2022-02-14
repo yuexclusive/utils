@@ -1,6 +1,9 @@
 package config
 
 import (
+	"path/filepath"
+	"strings"
+
 	"github.com/spf13/viper"
 )
 
@@ -18,9 +21,9 @@ const (
 
 // IDriver IDriver
 type IDriver[T any] interface {
+	Read() error
 	GetType() FileType
 	GetPath() string
-	Read() error
 	GetConfig() T
 }
 
@@ -54,6 +57,18 @@ func (d *Driver[T]) GetConfig() T {
 	return d.config
 }
 
-func NewDriver[T any](fileType FileType, path string) IDriver[T] {
-	return &Driver[T]{fileType: fileType, path: path}
+func NewDriver[T any](path string) IDriver[T] {
+	driver := &Driver[T]{path: path}
+	ext := strings.ToLower(filepath.Ext(path))
+	var fileType FileType
+	switch ext {
+	case "toml":
+		fileType = TOML
+	case "yaml", "yml":
+		fileType = YAML
+	case "json":
+		fileType = JSON
+	}
+	driver.fileType = fileType
+	return driver
 }

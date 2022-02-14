@@ -32,7 +32,7 @@ to quickly create a Cobra application.`,
 				panic(err)
 			}
 			defer file.Close()
-			content := config.DefaultConfigFile()
+			content := config.DefaultConfigContent()
 
 			fmt.Println(content)
 
