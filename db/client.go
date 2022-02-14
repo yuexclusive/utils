@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	log "logger"
+	"github.com/yuexclusive/utils/log"
 
 	"gorm.io/gorm"
 )

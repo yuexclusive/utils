@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"db"
+	"github.com/yuexclusive/utils/db"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"

@@ -1,7 +1,7 @@
 package mysql
 
 import (
-	"db"
+	"github.com/yuexclusive/utils/db"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"

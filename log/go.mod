@@ -1,4 +1,4 @@
-module github.com/yuexclusive/utils/logger
+module github.com/yuexclusive/utils/log
 
 go 1.18
 
