@@ -12,7 +12,7 @@ import (
 	"strings"
 	"time"
 
-	"config"
+	"github.com/yuexclusive/utils/config"
 
 	"github.com/gin-gonic/gin"
 	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
