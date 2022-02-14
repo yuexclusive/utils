@@ -12,7 +12,7 @@ type Employee struct {
 }
 
 func TestClient(t *testing.T) {
-	InitClient(&Config{Addr: "http://localhost:30005"})
+	InitClient(&Config{Addr: "http://localhost:9200"})
 
 	// _, err := GetClient().Index().Index("employee").BodyJson(&Employee{Name: "jj", Age: 35}).Do(context.Background())
 

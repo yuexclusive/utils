@@ -6,7 +6,7 @@ import (
 )
 
 func TestClient(t *testing.T) {
-	InitClient(&Config{Addr: "localhost:30001"})
+	InitClient(&Config{Addr: "localhost:6379"})
 
 	client := GetClient("")
 

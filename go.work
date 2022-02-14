@@ -2,7 +2,20 @@ go 1.18
 
 use (
 	./config
-	./db
-	./log
 	./crypto
+	./db
+	./es
+	./etcd
+	./eventbus
+	./evolve
+	./jwt
+	./kafka
+	./log
+	./mongo
+	./nats
+	./net
+	./pulsar
+	./redis
+	./shortcode
+	./snowflake
 )
