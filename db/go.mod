@@ -1,4 +1,4 @@
-module db
+module github.com/yuexclusive/utils/db
 
 go 1.18
 

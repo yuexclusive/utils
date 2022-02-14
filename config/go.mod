@@ -1,4 +1,4 @@
-module config
+module github.com/yuexclusive/utils/config
 
 go 1.18
 
