@@ -1,7 +1,8 @@
 package postgres
 
 import (
-	"github.com/yuexclusive/utils/db"
+	"db"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
