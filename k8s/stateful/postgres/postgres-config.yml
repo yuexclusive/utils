@@ -4,7 +4,7 @@ metadata:
   namespace: stateful
   name: postgres-config
 data:
-  future_postgres.sql: |
+  evolve.sql: |
     drop database if exists evolve;
 
     create database evolve;

@@ -18,15 +18,15 @@ spec:
           image: postgres:latest
           ports: 
             - containerPort: 5432
-          volumeMounts:
-            - mountPath: /var/lib/postgresql/data
-              name: postgres
-            - mountPath: /docker-entrypoint-initdb.d/future_postgres.sql
-              name: config-volume
-              subPath: future_postgres.sql
           env:
             - name: POSTGRES_PASSWORD
               value: "123456"
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgres
+            - mountPath: /docker-entrypoint-initdb.d/evolve.sql
+              name: config-volume
+              subPath: evolve.sql
       volumes:
         - name: config-volume
           configMap: 

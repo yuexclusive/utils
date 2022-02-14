@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/yuexclusive/utils/db"
+	"db"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -25,7 +25,7 @@ type UserRoleMap struct {
 }
 
 func TestInit(t *testing.T) {
-	InitDefault("test:123@tcp(127.0.0.1:30002)/evolve?charset=utf8mb4&parseTime=True&loc=Local", &gorm.Config{
+	InitDefault("test:123456@tcp(127.0.0.1:3306)/evolve?charset=utf8mb4&parseTime=True&loc=Local", &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{SingularTable: true},
 		Logger:         logger.Default.LogMode(logger.Info),
 	})
