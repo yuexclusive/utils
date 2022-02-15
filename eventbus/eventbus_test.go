@@ -11,7 +11,13 @@ type Data struct {
 }
 
 func Test_EventBus(t *testing.T) {
-	bus := NewBus[Data]()
+	Init[Data]("bus_data")
+
+	bus, err := Get[Data]("bus_data")
+
+	if err != nil {
+		panic(err)
+	}
 
 	bus.Subscribe("aa", func(topic, id string, d Data) {
 		fmt.Println(topic, id, d)
