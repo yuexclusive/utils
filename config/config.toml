@@ -1,6 +1,8 @@
+customers = ["aa", "bb", "cc"]
 [config]
 name = "example.srv"
 host = ""
+authHost = "http://localhost:8080"
 port = "8080"
 
 [config.postgre]

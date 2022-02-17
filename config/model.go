@@ -14,6 +14,7 @@ type Config struct {
 	TLS      *TLS      `mapstructure:"tls"`
 	Mongo    *Mongo    `mapstructure:"mongo"`
 	Nats     *Nats     `mapstructure:"nats"`
+	AuthHost string    `mapstructure:"authHost"`
 }
 
 // Mongo Mongo

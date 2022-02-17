@@ -15,6 +15,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/juju/ratelimit"
 	p "github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/yuexclusive/utils/config"
+	"github.com/yuexclusive/utils/httpclient"
 	"github.com/yuexclusive/utils/log"
 )
 
@@ -69,6 +71,28 @@ func AllowOrigin() gin.HandlerFunc {
 			c.AbortWithStatus(http.StatusNoContent)
 		}
 		c.Next()
+	}
+}
+
+type StandardClaims struct {
+	Audience  string `json:"aud,omitempty"`
+	ExpiresAt int64  `json:"exp,omitempty"`
+	Id        string `json:"jti,omitempty"`
+	IssuedAt  int64  `json:"iat,omitempty"`
+	Issuer    string `json:"iss,omitempty"`
+	NotBefore int64  `json:"nbf,omitempty"`
+	Subject   string `json:"sub,omitempty"`
+}
+
+// Auth
+func Auth() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		m, err := httpclient.GET[map[string]interface{}](config.Get[config.Config]().AuthHost+"/validate", map[string]string{"token": c.GetHeader("token")})
+		if err != nil {
+			c.Status(http.StatusUnauthorized)
+			return
+		}
+		c.Set("claims", m)
 	}
 }
 

@@ -2,7 +2,6 @@ package jwt
 
 import (
 	"testing"
-	"time"
 )
 
 const (
@@ -11,14 +10,14 @@ const (
 )
 
 func TestJwt(t *testing.T) {
-	token, err := GenToken(testId, testKey)
+	token, err := GenToken(StandardClaims{Id: testId}, testKey)
 	if err != nil {
 		t.Error(err)
 	}
 
 	t.Log(token)
 
-	time.Sleep(time.Second * 10)
+	// time.Sleep(time.Second * 10)
 
 	claims, err := GetClaims(token, testKey)
 

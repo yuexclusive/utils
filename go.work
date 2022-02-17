@@ -19,4 +19,6 @@ use (
 	./shortcode
 	./snowflake
 	./web
+	./httpclient
+	./example
 )

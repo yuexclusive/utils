@@ -2,24 +2,33 @@ package jwt
 
 import (
 	"errors"
-	"time"
 
 	"github.com/dgrijalva/jwt-go"
 )
 
-func GenToken(id string, key string) (string, error) {
-	if id == "" {
-		return "", errors.New("invalid id")
-	}
+type StandardClaims struct {
+	Audience  string `json:"aud,omitempty"`
+	ExpiresAt int64  `json:"exp,omitempty"`
+	Id        string `json:"jti,omitempty"`
+	IssuedAt  int64  `json:"iat,omitempty"`
+	Issuer    string `json:"iss,omitempty"`
+	NotBefore int64  `json:"nbf,omitempty"`
+	Subject   string `json:"sub,omitempty"`
+}
 
+func GenToken(claim StandardClaims, key string) (string, error) {
 	// Create the Claims
 	claims := &jwt.StandardClaims{
-		ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
-		Issuer:    "future",
-		Id:        id,
+		Audience:  claim.Audience,
+		ExpiresAt: claim.ExpiresAt,
+		Id:        claim.Id,
+		IssuedAt:  claim.IssuedAt,
+		Issuer:    claim.Issuer,
+		NotBefore: claim.NotBefore,
+		Subject:   claim.Subject,
 	}
 
-	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(key))
+	token, err := jwt.NewWithClaims(jwt.SigningMethodHS512, claims).SignedString([]byte(key))
 
 	if err != nil {
 		return "", err

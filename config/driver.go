@@ -24,7 +24,7 @@ type IDriver[T any] interface {
 	Read() error
 	GetType() FileType
 	GetPath() string
-	GetConfig() T
+	Get() T
 }
 
 // Driver Driver
@@ -53,7 +53,7 @@ func (d *Driver[T]) Read() error {
 	return nil
 }
 
-func (d *Driver[T]) GetConfig() T {
+func (d *Driver[T]) Get() T {
 	return d.config
 }
 
