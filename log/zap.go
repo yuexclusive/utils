@@ -53,7 +53,7 @@ func (z *Zap) initConfig() {
 			log.Println("read config for log failed: ", r)
 		}
 	}()
-	cfg := config.Init[config.Config]("config.toml").GetConfig()
+	cfg := config.Get[config.Config]()
 	z.zapConfig = cfg.Log
 }
 

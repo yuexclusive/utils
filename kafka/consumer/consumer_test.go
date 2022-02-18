@@ -26,17 +26,18 @@ func (h *handler) Cleanup(_ sarama.ConsumerGroupSession) error {
 // ConsumeClaim must start a consumer loop of ConsumerGroupClaim's Messages().
 // Once the Messages() channel is closed, the Handler must finish its processing
 // loop and exit.
-func (h *handler) ConsumeClaim(_ sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
+func (h *handler) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
 	// panic("not implemented") // TODO: Implement
 	for message := range claim.Messages() {
 		fmt.Println(string(message.Value))
-		// time.Sleep(time.Minute * 10)
+		session.MarkMessage(message, "")
+		// time.Sleep(time.Minute)
 	}
 	return nil
 }
 
 func TestConsume(t *testing.T) {
-	c := NewConsumer([]string{"localhost:9092"}, "names", "g3", new(handler))
+	c := NewConsumer([]string{"localhost:9092"}, "love", "g3", new(handler))
 
 	c.Consume()
 }
