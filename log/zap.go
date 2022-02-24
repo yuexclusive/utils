@@ -13,8 +13,12 @@ import (
 	"time"
 
 	"github.com/yuexclusive/utils/config"
+	"google.golang.org/grpc"
 
 	"github.com/gin-gonic/gin"
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
+	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -231,4 +235,20 @@ func (z *Zap) RecoveryWithZap(stack bool) gin.HandlerFunc {
 func GinUseZap(engine *gin.Engine) {
 	engine.Use(_driver.Ginzap(time.RFC3339, true))
 	engine.Use(_driver.RecoveryWithZap(true))
+}
+
+// GRPCUseZap GRPCUseZap
+func GRPCUseZap(opts ...grpc_zap.Option) []grpc.ServerOption {
+	res := []grpc.ServerOption{
+		grpc_middleware.WithUnaryServerChain(
+			grpc_ctxtags.UnaryServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
+			grpc_zap.UnaryServerInterceptor(_driver.zapLogger, opts...),
+		),
+		grpc_middleware.WithStreamServerChain(
+			grpc_ctxtags.StreamServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
+			grpc_zap.StreamServerInterceptor(_driver.zapLogger, opts...),
+		),
+	}
+
+	return res
 }

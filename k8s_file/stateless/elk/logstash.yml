@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: logstash
-          image: logstash:7.16.3
+          image: logstash:8.0.0
           ports: 
             - containerPort: 5044
           volumeMounts:

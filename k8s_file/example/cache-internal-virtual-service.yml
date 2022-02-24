@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: cache-internal-virtual-service
+spec:
+  hosts:
+  - "cache-grpc"
+  http:
+    - route:
+      - destination:
+          port:
+            number: 8081
+          host: cache-grpc
+          subset: v1
+        weight: 10
+      - destination:
+          port:
+            number: 8081
+          host: cache-grpc
+          subset: v2
+        weight: 90

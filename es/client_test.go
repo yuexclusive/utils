@@ -7,8 +7,8 @@ import (
 )
 
 type Employee struct {
-	Name string
-	Age  int
+	Name string `json:"name"`
+	Age  int    `json:"age"`
 }
 
 func TestClient(t *testing.T) {
@@ -20,14 +20,39 @@ func TestClient(t *testing.T) {
 	// 	panic(err)
 	// }
 
-	res, err := GetClient().Search("employee").Do(context.Background())
+	// panic("test panic")
+
+	ok, err := GetClient().Exists().Index("employee").Id("1").Do(context.Background())
+
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	if ok {
+		deleteRes, err := GetClient().Delete().Index("employee").Id("1").Do(context.Background())
+		if err != nil {
+			panic(err)
+		}
+
+		fmt.Println(deleteRes.Result)
+
+	}
+
+	res, err := GetClient().Index().Index("employee").Id("1").BodyJson(&Employee{Name: "jj", Age: 35}).Do(context.Background())
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(res)
+
+	res2, err := GetClient().Search("employee").Do(context.Background())
 
 	if err != nil {
 		panic(err)
 	}
 
-	for _, v := range res.Hits.Hits {
-		fmt.Println(v.Id)
+	for _, v := range res2.Hits.Hits {
+		fmt.Println(string(v.Source))
 	}
 
 }

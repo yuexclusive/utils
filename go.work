@@ -21,4 +21,6 @@ use (
 	./web
 	./httpclient
 	./example
+	./websocket
+	./k8s_file
 )
