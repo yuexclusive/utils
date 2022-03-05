@@ -17,7 +17,7 @@ spec:
         port:
           number: 80
         host: test
-        subset: v3
+        subset: v2
   - match:
     - uri:
         prefix: /
@@ -32,5 +32,5 @@ spec:
         port:
           number: 80
         host: test
-        subset: v2
+        subset: v3
       weight: 90

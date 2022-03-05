@@ -4,7 +4,7 @@ metadata:
   name: test-gateway-virtual-service
 spec:
   hosts:
-  - "test.example.com"
+  - "*.example.com"
   gateways:
   - test-gateway
   http:
@@ -19,7 +19,7 @@ spec:
         port:
           number: 80
         host: test
-        subset: v3
+        subset: v2
   - match:
     - uri:
         prefix: /
@@ -29,10 +29,10 @@ spec:
           number: 80
         host: test
         subset: v1
-      weight: 10
+      weight: 100
     - destination:
         port:
           number: 80
         host: test
-        subset: v2
-      weight: 90
+        subset: v3
+      weight: 0
