@@ -23,4 +23,5 @@ use (
 	./example
 	./websocket
 	./k8s_file
+	./email
 )

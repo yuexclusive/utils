@@ -1,10 +1,11 @@
 package main
 
 import (
-	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -90,17 +91,31 @@ func main() {
 		chat.ServeWs(hub, c.Writer, c.Request)
 	})
 	engine.GET("/grpc", func(c *gin.Context) {
-		conn, err := grpc.Dial("cache-grpc:8081", grpc.WithInsecure())
+		cookie := c.GetHeader("cookie")
+		targetHost := "cache-grpc" //port is 80
+		target := fmt.Sprintf("%s", targetHost)
+		if strings.Contains(cookie, "version=v2") {
+			target = fmt.Sprintf("%s-v2", targetHost)
+		} else {
+			target = fmt.Sprintf("%s-v1", targetHost)
+		}
+		target = fmt.Sprintf("%s:80", target)
+		conn, err := grpc.Dial(target, grpc.WithInsecure())
 		if err != nil {
 			panic(err)
 		}
-		res, err := hello.NewGreeterClient(conn).SayHello(context.Background(), &hello.HelloRequest{Name: "Scarlett"})
+		res, err := hello.NewGreeterClient(conn).SayHello(c, &hello.HelloRequest{Name: "Scarlett"})
 		if err != nil {
 			c.Error(err)
 			return
 		}
 
-		c.String(http.StatusOK, res.Message)
+		hostName, err := os.Hostname()
+		if err != nil {
+			panic(err)
+		}
+
+		c.String(http.StatusOK, fmt.Sprintf("%s--%s", hostName, res.Message))
 	})
 
 	engine.GET("/error", func(c *gin.Context) {
