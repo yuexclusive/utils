@@ -27,3 +27,6 @@ spec:
       - name: "istio-ingressgateway"
         k8s:
           affinity: *affinity
+
+
+  
