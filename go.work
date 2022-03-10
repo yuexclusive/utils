@@ -22,6 +22,6 @@ use (
 	./httpclient
 	./example
 	./websocket
-	./k8s_file
+	./kubernetes
 	./email
 )

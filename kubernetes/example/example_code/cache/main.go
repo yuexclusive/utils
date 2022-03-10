@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/yuexclusive/utils/k8s_file/example_code/proto/hello"
+	"github.com/yuexclusive/utils/kubernetes/example/example_code/proto/hello"
 	"github.com/yuexclusive/utils/log"
 	"google.golang.org/grpc"
 

@@ -1,4 +1,4 @@
-module github.com/yuexclusive/utils/k8s_file
+module github.com/yuexclusive/utils/kubernetes
 
 go 1.18
 

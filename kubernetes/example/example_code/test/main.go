@@ -12,7 +12,7 @@ import (
 	"google.golang.org/grpc"
 
 	"github.com/yuexclusive/utils/config"
-	"github.com/yuexclusive/utils/k8s_file/example_code/proto/hello"
+	"github.com/yuexclusive/utils/kubernetes/example/example_code/proto/hello"
 	"github.com/yuexclusive/utils/log"
 	"github.com/yuexclusive/utils/websocket/chat"
 )
