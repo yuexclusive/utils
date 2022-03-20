@@ -27,16 +27,16 @@ type IDriver[T any] interface {
 	Get() T
 }
 
-// Driver Driver
-type Driver[T any] struct {
+// driver driver
+type driver[T any] struct {
 	fileType FileType
 	path     string
 	config   T
 }
 
-func (d *Driver[T]) GetType() FileType { return d.fileType }
-func (d *Driver[T]) GetPath() string   { return d.path }
-func (d *Driver[T]) Read() error {
+func (d *driver[T]) GetType() FileType { return d.fileType }
+func (d *driver[T]) GetPath() string   { return d.path }
+func (d *driver[T]) Read() error {
 	var cfg T
 	viper.SetConfigType(string(d.fileType))
 
@@ -53,20 +53,20 @@ func (d *Driver[T]) Read() error {
 	return nil
 }
 
-func (d *Driver[T]) Get() T {
+func (d *driver[T]) Get() T {
 	return d.config
 }
 
 func NewDriver[T any](path string) IDriver[T] {
-	driver := &Driver[T]{path: path}
+	driver := &driver[T]{path: path}
 	ext := strings.ToLower(filepath.Ext(path))
 	var fileType FileType
 	switch ext {
-	case "toml":
+	case ".toml":
 		fileType = TOML
-	case "yaml", "yml":
+	case ".yaml", ".yml":
 		fileType = YAML
-	case "json":
+	case ".json":
 		fileType = JSON
 	}
 	driver.fileType = fileType
