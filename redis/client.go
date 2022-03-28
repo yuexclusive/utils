@@ -21,6 +21,25 @@ var clientMapLock sync.Mutex
 var clientMap = make(map[string]*Client)
 
 // NewScript new script
+/*
+redis.InitClient(&redis.Config{Addr: "localhost:6379"})
+s := redis.NewScript(`
+local key = KEYS[1]
+local change = ARGV[1]
+local val = redis.call("GET",key)
+val = val + 0 -- parse to a number
+if val <= 10 then
+val = val + change
+redis.call("SET",key,val)
+end
+return val
+`)
+
+keys := []string{"test"}
+values := []interface{}{3}
+
+num, err := s.Run(redis.GetClient(""), keys, values...).Int()
+*/
 func NewScript(src string) *redis.Script {
 	return redis.NewScript(src)
 }
