@@ -24,4 +24,5 @@ use (
 	./websocket
 	./kubernetes
 	./email
+	./gin
 )

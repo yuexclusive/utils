@@ -20,6 +20,11 @@ type Client struct {
 var clientMapLock sync.Mutex
 var clientMap = make(map[string]*Client)
 
+// NewScript new script
+func NewScript(src string) *redis.Script {
+	return redis.NewScript(src)
+}
+
 // GetClient 根据name获取客户端连接
 func GetClient(name string) *Client {
 	res := clientMap[name]
