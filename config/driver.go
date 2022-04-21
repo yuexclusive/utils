@@ -60,7 +60,7 @@ func (d *driver[T]) Get() T {
 func NewDriver[T any](path string) IDriver[T] {
 	driver := &driver[T]{path: path}
 	ext := strings.ToLower(filepath.Ext(path))
-	var fileType FileType
+	var fileType FileType = TOML
 	switch ext {
 	case ".toml":
 		fileType = TOML

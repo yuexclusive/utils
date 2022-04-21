@@ -32,3 +32,6 @@ func TestJwt(t *testing.T) {
 		t.Errorf("got: %s,want: %s", id, testId)
 	}
 }
+
+func TestYufu(t *testing.T) {
+}
