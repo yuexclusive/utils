@@ -27,7 +27,7 @@ func TestJwt(t *testing.T) {
 
 	t.Log(claims)
 
-	id := claims["jti"]
+	id := claims["jti"].(string)
 	if id != testId {
 		t.Errorf("got: %s,want: %s", id, testId)
 	}
