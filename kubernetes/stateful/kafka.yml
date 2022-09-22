@@ -36,6 +36,9 @@ spec:
               value: "localhost:2181"
             - name: ALLOW_PLAINTEXT_LISTENER
               value: "yes"
+          volumeMounts:
+            - name: kafka
+              mountPath: /bitnami/kafka
   volumeClaimTemplates:
     - metadata:
         name: kafka
